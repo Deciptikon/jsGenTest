@@ -1,10 +1,15 @@
 // Настройки игры
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const scoreDisplay = document.getElementById("score");
 
 // Размеры игрового поля
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+
+// Переменные для паузы
+let isPaused = false;
+let playerScore = 0;
 
 // Класс игрока
 class Player {
@@ -13,24 +18,37 @@ class Player {
     this.y = y;
     this.size = size;
     this.speed = speed;
+    this.angle = 0;
     this.projectiles = [];
   }
 
   moveTo(targetX, targetY) {
-    const angle = Math.atan2(targetY - this.y, targetX - this.x);
-    this.x += Math.cos(angle) * this.speed;
-    this.y += Math.sin(angle) * this.speed;
+    const dx = targetX - this.x;
+    const dy = targetY - this.y;
+    this.angle = Math.atan2(dy, dx);
+    this.x += Math.cos(this.angle) * this.speed;
+    this.y += Math.sin(this.angle) * this.speed;
   }
 
   shoot() {
     this.projectiles.push(
-      new Projectile(this.x + this.size / 2, this.y + this.size / 2, 5, 7)
+      new Projectile(
+        this.x + this.size / 2,
+        this.y + this.size / 2,
+        5,
+        7,
+        this.angle
+      )
     );
   }
 
   draw() {
+    ctx.save();
+    ctx.translate(this.x + this.size / 2, this.y + this.size / 2);
+    ctx.rotate(this.angle);
     ctx.fillStyle = "blue";
-    ctx.fillRect(this.x, this.y, this.size, this.size);
+    ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+    ctx.restore();
   }
 
   updateProjectiles() {
@@ -50,12 +68,12 @@ class Player {
 
 // Класс снарядов
 class Projectile {
-  constructor(x, y, size, speed) {
+  constructor(x, y, size, speed, angle) {
     this.x = x;
     this.y = y;
     this.size = size;
     this.speed = speed;
-    this.angle = Math.atan2(mouseY - this.y, mouseX - this.x);
+    this.angle = angle;
   }
 
   update() {
@@ -90,6 +108,11 @@ class Monster {
     ctx.closePath();
     ctx.fill();
   }
+
+  respawn() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+  }
 }
 
 // Создание игрока
@@ -114,18 +137,27 @@ let mouseY = canvas.height / 2;
 
 // Основной игровой цикл
 function gameLoop() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (!isPaused) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Обновление и отрисовка игрока
-  player.moveTo(mouseX, mouseY);
-  player.draw();
-  player.updateProjectiles();
+    // Обновление и отрисовка игрока
+    player.moveTo(mouseX, mouseY);
+    player.draw();
+    player.updateProjectiles();
 
-  // Отрисовка монстров
-  monsters.forEach((monster) => {
-    monster.draw();
-  });
-
+    // Отрисовка монстров и проверка на коллизии
+    monsters.forEach((monster, monsterIndex) => {
+      monster.draw();
+      player.projectiles.forEach((projectile, projectileIndex) => {
+        if (checkCollision(projectile, monster)) {
+          player.projectiles.splice(projectileIndex, 1);
+          monster.respawn();
+          playerScore++;
+          updateScore();
+        }
+      });
+    });
+  }
   requestAnimationFrame(gameLoop);
 }
 
@@ -141,6 +173,27 @@ canvas.addEventListener("mousedown", (e) => {
     player.shoot();
   }
 });
+
+// Событие нажатия на клавишу Escape для паузы
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    isPaused = !isPaused;
+  }
+});
+
+// Проверка на коллизии
+function checkCollision(projectile, monster) {
+  const distX = projectile.x - monster.x;
+  const distY = projectile.y - monster.y;
+  const distance = Math.sqrt(distX * distX + distY * distY);
+
+  return distance < monster.size;
+}
+
+// Обновление счета на экране
+function updateScore() {
+  scoreDisplay.textContent = `Score = ${playerScore}`;
+}
 
 // Запуск игрового цикла
 gameLoop();
