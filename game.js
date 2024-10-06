@@ -116,7 +116,7 @@ class Player {
 
   draw() {
     ctx.save();
-    ctx.translate(this.x + this.size / 2, this.y + this.size / 2);
+    ctx.translate(this.x, this.y);
     ctx.rotate(this.angle);
     ctx.fillStyle = "blue";
     ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
