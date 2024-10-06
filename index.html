@@ -3,31 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Game with Pause and Score</title>
+    <title>JS Game</title>
     <style>
-      body {
+      body,
+      html {
         margin: 0;
-        overflow: hidden;
+        padding: 0;
       }
-
       canvas {
-        background-color: #f0f0f0;
         display: block;
       }
-
       #score {
         position: absolute;
         top: 10px;
         left: 10px;
-        font-size: 20px;
-        color: black;
+        font-size: 24px;
+        color: white;
       }
     </style>
   </head>
   <body>
-    <canvas id="gameCanvas"></canvas>
     <div id="score">Score = 0</div>
-
-    <script src="game.js"></script>
+    <canvas id="gameCanvas"></canvas>
+    <script type="module" src="./game.js"></script>
   </body>
 </html>
