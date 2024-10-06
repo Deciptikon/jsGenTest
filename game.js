@@ -103,15 +103,7 @@ class Player {
   }
 
   shoot() {
-    this.projectiles.push(
-      new Projectile(
-        this.x + this.size / 2,
-        this.y + this.size / 2,
-        5,
-        7,
-        this.angle
-      )
-    );
+    this.projectiles.push(new Projectile(this.x, this.y, 5, 7, this.angle));
   }
 
   draw() {
