@@ -72,7 +72,6 @@ export class Game {
             this.player.projectiles.splice(projectileIndex, 1);
             monster.respawn(this.canvas);
             this.playerScore++;
-            this.updateScore();
           }
         });
       });
