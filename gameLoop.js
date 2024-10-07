@@ -20,9 +20,7 @@ export class Game {
       this.monsters.push(
         new Monster(
           Math.random() * this.canvas.width,
-          Math.random() * this.canvas.height,
-          40,
-          1
+          Math.random() * this.canvas.height
         )
       );
     }
@@ -115,7 +113,11 @@ export class Game {
     this.ctx.fillStyle = "white";
     this.ctx.font = "48px Arial";
     this.ctx.textAlign = "center";
-    this.ctx.fillText("Pause", this.canvas.width / 2, this.canvas.height / 2);
+    this.ctx.fillText(
+      "PAUSE",
+      this.canvas.width / 2,
+      this.canvas.height / 2 - 103
+    );
   }
 
   start() {
