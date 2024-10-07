@@ -1,9 +1,56 @@
+import { MONSTER_SPEED, MONSTER_SIZE } from "./config.js";
+
 export class Monster {
-  constructor(x, y, size, speed) {
+  constructor(x, y, size = MONSTER_SIZE, speed = MONSTER_SPEED) {
     this.x = x;
     this.y = y;
     this.size = size;
     this.speed = speed;
+    this.angle = Math.random() * Math.PI * 2;
+  }
+
+  update() {
+    // Простое случайное движение, пока без сложных вычислений
+    this.x += Math.cos(this.angle) * this.speed;
+    this.y += Math.sin(this.angle) * this.speed;
+
+    // Проверка на границы экрана и смена направления
+    if (
+      this.x < 0 ||
+      this.x > canvas.width ||
+      this.y < 0 ||
+      this.y > canvas.height
+    ) {
+      this.angle = Math.random() * Math.PI * 2;
+
+      if (
+        this.x < 0 &&
+        this.angle > Math.PI / 2 &&
+        this.angle < (3 * Math.PI) / 2
+      ) {
+        this.angle -= Math.PI;
+        this.angle = (this.angle + Math.PI * 2) % (Math.PI * 2);
+        return;
+      }
+      if (
+        (this.x > canvas.width && this.angle < Math.PI / 2) ||
+        this.angle > (3 * Math.PI) / 2
+      ) {
+        this.angle += Math.PI;
+        this.angle = (this.angle + Math.PI * 2) % (Math.PI * 2);
+        return;
+      }
+      if (this.y < 0 && this.angle < Math.PI) {
+        this.angle += Math.PI;
+        this.angle = (this.angle + Math.PI * 2) % (Math.PI * 2);
+        return;
+      }
+      if (this.y > canvas.height && this.angle > Math.PI) {
+        this.angle -= Math.PI;
+        this.angle = (this.angle + Math.PI * 2) % (Math.PI * 2);
+        return;
+      }
+    }
   }
 
   draw(ctx) {

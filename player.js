@@ -1,7 +1,8 @@
+import { PLAYER_SPEED, PLAYER_SIZE } from "./config.js";
 import { Projectile } from "./projectile.js";
 
 export class Player {
-  constructor(x, y, size, speed) {
+  constructor(x, y, size = PLAYER_SIZE, speed = PLAYER_SPEED) {
     this.x = x;
     this.y = y;
     this.size = size;
@@ -15,7 +16,7 @@ export class Player {
     const dy = targetY - this.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (distance > 10) {
+    if (distance > PLAYER_SIZE) {
       this.angle = Math.atan2(dy, dx);
       this.x += Math.cos(this.angle) * this.speed;
       this.y += Math.sin(this.angle) * this.speed;

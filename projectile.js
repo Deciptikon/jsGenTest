@@ -1,5 +1,7 @@
+import { PROJECTILE_SPEED, PROJECTILE_RADIUS } from "./config.js";
+
 export class Projectile {
-  constructor(x, y, size, speed, angle) {
+  constructor(x, y, size = PROJECTILE_RADIUS, speed = PROJECTILE_SPEED, angle) {
     this.x = x;
     this.y = y;
     this.size = size;

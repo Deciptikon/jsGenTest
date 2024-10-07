@@ -1,5 +1,6 @@
 import { Player } from "./player.js";
 import { Monster } from "./monster.js";
+import { INITIAL_MONSTER_COUNT } from "./config.js";
 
 export class Game {
   constructor(canvas, ctx) {
@@ -10,7 +11,7 @@ export class Game {
     this.player = new Player(canvas.width / 2, canvas.height / 2, 50, 3);
     this.monsters = [];
     this.mouse = { x: canvas.width / 2, y: canvas.height / 2 };
-    this.initMonsters(5);
+    this.initMonsters(INITIAL_MONSTER_COUNT);
     this.initListeners();
   }
 
@@ -56,8 +57,10 @@ export class Game {
       this.player.moveTo(this.mouse.x, this.mouse.y);
       this.player.draw(this.ctx);
       this.player.updateProjectiles(this.ctx, this.canvas);
+      //monsters.forEach(monster => monster.update());
 
       this.monsters.forEach((monster, monsterIndex) => {
+        monster.update();
         monster.draw(this.ctx);
         this.player.projectiles.forEach((projectile, projectileIndex) => {
           if (this.checkCollision(projectile, monster)) {
