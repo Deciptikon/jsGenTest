@@ -8,7 +8,7 @@ export class Game {
     this.ctx = ctx;
     this.isPaused = false;
     this.playerScore = 0;
-    this.player = new Player(canvas.width / 2, canvas.height / 2, 50, 3);
+    this.player = new Player(canvas.width / 2, canvas.height / 2);
     this.monsters = [];
     this.mouse = { x: canvas.width / 2, y: canvas.height / 2 };
     this.initMonsters(INITIAL_MONSTER_COUNT);
@@ -43,24 +43,29 @@ export class Game {
     });
   }
 
-  updateScore() {
-    const scoreDisplay = document.getElementById("score");
-    scoreDisplay.textContent = `Score = ${this.playerScore}`;
+  drawScore(ctx, score) {
+    ctx.fillStyle = "black";
+    ctx.font = "48px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(
+      `Score = ${score}`,
+      this.canvas.width / 2,
+      this.canvas.height / 2
+    );
   }
 
   gameLoop() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    this.drawCustomCursor();
+    this.drawScore(this.ctx, this.playerScore);
 
     if (!this.isPaused) {
       this.player.moveTo(this.mouse.x, this.mouse.y);
-      this.player.draw(this.ctx);
+
       this.player.updateProjectiles(this.ctx, this.canvas);
-      //monsters.forEach(monster => monster.update());
+      //this.monsters.forEach((monster) => monster.update());
 
       this.monsters.forEach((monster, monsterIndex) => {
-        monster.update();
+        monster.update(this.canvas);
         monster.draw(this.ctx);
         this.player.projectiles.forEach((projectile, projectileIndex) => {
           if (this.checkCollision(projectile, monster)) {
@@ -71,6 +76,9 @@ export class Game {
           }
         });
       });
+
+      this.player.draw(this.ctx);
+      this.drawCustomCursor();
     } else {
       this.drawPauseMenu();
     }

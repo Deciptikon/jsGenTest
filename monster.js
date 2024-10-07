@@ -9,7 +9,7 @@ export class Monster {
     this.angle = Math.random() * Math.PI * 2;
   }
 
-  update() {
+  update(canvas) {
     // Простое случайное движение, пока без сложных вычислений
     this.x += Math.cos(this.angle) * this.speed;
     this.y += Math.sin(this.angle) * this.speed;
@@ -22,34 +22,19 @@ export class Monster {
       this.y > canvas.height
     ) {
       this.angle = Math.random() * Math.PI * 2;
+    }
 
-      if (
-        this.x < 0 &&
-        this.angle > Math.PI / 2 &&
-        this.angle < (3 * Math.PI) / 2
-      ) {
-        this.angle -= Math.PI;
-        this.angle = (this.angle + Math.PI * 2) % (Math.PI * 2);
-        return;
-      }
-      if (
-        (this.x > canvas.width && this.angle < Math.PI / 2) ||
-        this.angle > (3 * Math.PI) / 2
-      ) {
-        this.angle += Math.PI;
-        this.angle = (this.angle + Math.PI * 2) % (Math.PI * 2);
-        return;
-      }
-      if (this.y < 0 && this.angle < Math.PI) {
-        this.angle += Math.PI;
-        this.angle = (this.angle + Math.PI * 2) % (Math.PI * 2);
-        return;
-      }
-      if (this.y > canvas.height && this.angle > Math.PI) {
-        this.angle -= Math.PI;
-        this.angle = (this.angle + Math.PI * 2) % (Math.PI * 2);
-        return;
-      }
+    if (this.x < 0) {
+      this.x = 0;
+    }
+    if (this.x > canvas.width) {
+      this.x = canvas.width;
+    }
+    if (this.y < 0) {
+      this.y = 0;
+    }
+    if (this.y > canvas.height) {
+      this.y = canvas.height;
     }
   }
 

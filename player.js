@@ -24,7 +24,7 @@ export class Player {
   }
 
   shoot() {
-    this.projectiles.push(new Projectile(this.x, this.y, 5, 7, this.angle));
+    this.projectiles.push(new Projectile(this.x, this.y, this.angle));
   }
 
   draw(ctx) {
