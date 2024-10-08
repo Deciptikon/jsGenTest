@@ -27,15 +27,60 @@ export class Game {
   }
 
   initListeners() {
-    this.canvas.addEventListener("mousemove", (e) => {
-      this.mouse.x = e.clientX;
-      this.mouse.y = e.clientY;
-    });
+    // Функция для проверки, поддерживаются ли сенсорные экраны
+    const isTouchDevice =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
-    this.canvas.addEventListener("mousedown", (e) => {
-      if (e.button === 0) this.player.shoot();
-    });
+    if (isTouchDevice) {
+      // Инициализация сенсорных слушателей
+      console.log("Запуск на сенсорном устройстве");
 
+      let isTouching = false;
+
+      // Обработка касания (начало касания)
+      this.canvas.addEventListener("touchstart", (e) => {
+        const touch = e.touches[0];
+        this.mouse.x = touch.clientX - this.canvas.offsetLeft;
+        this.mouse.y = touch.clientY - this.canvas.offsetTop;
+
+        isTouching = true;
+        this.player.shoot();
+      });
+
+      // Обработка движения пальца по экрану
+      this.canvas.addEventListener("touchmove", (e) => {
+        if (isTouching) {
+          const touch = e.touches[0];
+          this.mouse.x = touch.clientX - this.canvas.offsetLeft;
+          this.mouse.y = touch.clientY - this.canvas.offsetTop;
+
+          e.preventDefault(); // Предотвращаем прокрутку
+        }
+      });
+
+      // Окончание касания
+      this.canvas.addEventListener("touchend", () => {
+        isTouching = false;
+      });
+
+      this.canvas.addEventListener("touchcancel", () => {
+        isTouching = false;
+      });
+    } else {
+      // Инициализация слушателей для мыши
+      console.log("Запуск на компьютере с мышью");
+
+      this.canvas.addEventListener("mousemove", (e) => {
+        this.mouse.x = e.clientX;
+        this.mouse.y = e.clientY;
+      });
+
+      this.canvas.addEventListener("mousedown", (e) => {
+        if (e.button === 0) this.player.shoot();
+      });
+    }
+
+    // Общий обработчик клавиатуры для обоих типов устройств
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") this.isPaused = !this.isPaused;
     });
@@ -52,8 +97,19 @@ export class Game {
     );
   }
 
+  getRandomElement(list) {
+    if (list.length === 0) {
+      return null;
+    }
+    const randomIndex = Math.floor(Math.random() * list.length);
+    return list[randomIndex];
+  }
+
   gameLoop() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    //this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillStyle = "white";
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
     this.drawScore(this.ctx, this.playerScore);
 
     if (!this.isPaused) {
@@ -63,12 +119,20 @@ export class Game {
       //this.monsters.forEach((monster) => monster.update());
 
       this.monsters.forEach((monster, monsterIndex) => {
-        monster.update(this.canvas);
+        let data = [
+          this.player.x / this.canvas.width,
+          this.player.y / this.canvas.height,
+          monster.x / this.canvas.width,
+          monster.y / this.canvas.height,
+          monster.tempory,
+        ];
+        monster.update(this.canvas, data);
         monster.draw(this.ctx);
         this.player.projectiles.forEach((projectile, projectileIndex) => {
           if (this.checkCollision(projectile, monster)) {
+            console.log("Collision");
             this.player.projectiles.splice(projectileIndex, 1);
-            monster.respawn(this.canvas);
+            monster.respawn(this.canvas, this.getRandomElement(this.monsters));
             this.playerScore++;
           }
         });

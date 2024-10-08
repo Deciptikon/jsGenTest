@@ -9,6 +9,7 @@ export class Player {
     this.speed = speed;
     this.angle = 0;
     this.projectiles = [];
+    this.distance_shooting = 500 * 500;
   }
 
   moveTo(targetX, targetY) {
@@ -39,11 +40,15 @@ export class Player {
   updateProjectiles(ctx, canvas) {
     this.projectiles.forEach((projectile, index) => {
       projectile.update(ctx);
+      let lx = this.x - projectile.x;
+      let ly = this.y - projectile.y;
+
       if (
         projectile.x < 0 ||
         projectile.x > canvas.width ||
         projectile.y < 0 ||
-        projectile.y > canvas.height
+        projectile.y > canvas.height ||
+        lx * lx + ly * ly > this.distance_shooting
       ) {
         this.projectiles.splice(index, 1);
       }

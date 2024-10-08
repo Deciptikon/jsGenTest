@@ -1,0 +1,35 @@
+import { Lay } from "./lays.js";
+
+export class NeuralNetwork {
+  constructor() {
+    this.lays = [];
+  }
+
+  pushLay(lay) {
+    this.lays.push(lay);
+  }
+
+  getLastLay() {
+    return this.lays[this.lays.length - 1];
+  }
+
+  getFirstLay() {
+    return this.lays[0];
+  }
+
+  forward(inputs) {
+    this.getFirstLay().setNeurons(inputs);
+    this.lays.forEach((lay) => {
+      lay.forward();
+    });
+    return this.getLastLay().getNeurons();
+  }
+
+  mutation(probability = 0.5, amplitude = 0.1) {
+    //
+  }
+
+  crossingover(otherNN) {
+    //
+  }
+}
