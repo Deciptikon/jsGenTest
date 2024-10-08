@@ -9,7 +9,7 @@ export class Player {
     this.speed = speed;
     this.angle = 0;
     this.projectiles = [];
-    this.distance_shooting = 500 * 500;
+    this.distance_shooting = 250 * 250;
   }
 
   moveTo(targetX, targetY) {

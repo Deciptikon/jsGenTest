@@ -19,19 +19,35 @@ export class Monster {
 
   createNN() {
     this.nn = new NeuralNetwork();
-    this.nn.pushLay(new Lay(new Array(INPUT_SIZE_NEURONS).fill(0)));
-    this.nn.pushLay(new Lay(new Array(4).fill(0)), this.nn.getLastLay());
-    this.nn.pushLay(new Lay(new Array(4).fill(0)), this.nn.getLastLay());
-    this.nn.pushLay(
-      new Lay(new Array(OUTPUT_SIZE_NEURONS).fill(0)),
-      this.nn.getLastLay()
-    );
+    //console.log("this.nn.getLastLay() = ", this.nn.getLastLay());
+
+    let neurons1 = new Array(INPUT_SIZE_NEURONS).fill(0);
+    let layer1 = new Lay(neurons1);
+    this.nn.pushLay(layer1);
+    //console.log("layer1.getNeurons() = ", layer1.getNeurons());
+
+    let neurons4 = new Array(40).fill(0);
+    let layer4 = new Lay(neurons4, neurons1);
+    this.nn.pushLay(layer4);
+    //console.log("this.nn.getLastLay() = ", this.nn.getLastLay());
+
+    let neurons5 = new Array(OUTPUT_SIZE_NEURONS).fill(0);
+    let layer5 = new Lay(neurons5, neurons4);
+    this.nn.pushLay(layer5);
+    //console.log("this.nn.getLastLay() = ", this.nn.getLastLay());
+
+    //console.log("--------- NEW MONSTER ----------");
+    //this.nn.print();
+    //console.log("");
   }
 
   update(canvas, data) {
-    [this.angle, this.tempory] = this.nn.forward(data);
+    //console.log("data = ", data);
+    let [angle, tempory] = this.nn.forward(data);
+    this.angle = angle;
+    this.tempory = tempory;
     this.angle *= Math.PI * 2;
-    //console.log(this.tempory);
+    //console.log("tempory = ", this.tempory, "   | angle = ", this.angle);
 
     this.x += Math.cos(this.angle) * this.speed;
     this.y += Math.sin(this.angle) * this.speed;
@@ -69,6 +85,9 @@ export class Monster {
       this.nn.crossingover(randomMonster.getNN());
       this.nn.mutation(0.01, 0.01);
     }
+    //console.log("--------- NEW MONSTER ----------");
+    //this.nn.print();
+    //console.log("");
   }
 
   getNN() {

@@ -1,18 +1,22 @@
 export class Lay {
-  constructor(currentLay, previousLay = null) {
-    this.neurons = currentLay;
-    if (previousLay != null) {
+  constructor(currentNeurons, previousNeurons) {
+    //console.log("currentNeurons = ", currentNeurons?.length);
+    //console.log("previousNeurons = ", previousNeurons?.length);
+    this.neurons = currentNeurons;
+    if (previousNeurons != null) {
+      this.previousNeurons = previousNeurons;
+
       this.weights = this.randomWeights(
         1.0,
-        previousLay.length,
+        this.previousNeurons.length,
         this.neurons.length
       );
+      this.shifts = new Array(this.neurons.length).fill(0);
     } else {
+      this.previousNeurons = null;
       this.weights = null;
+      this.shifts = null;
     }
-
-    this.shifts = new Array(this.neurons.length).fill(0);
-    this.previousLay = previousLay;
   }
 
   randomWeights(amplitude, w, h) {
@@ -34,7 +38,7 @@ export class Lay {
       for (let i = 0; i < this.weights.length; i++) {
         let summ = 0;
         for (let j = 0; j < this.weights[i].length; j++) {
-          summ += this.weights[i][j] * this.previousLay.neurons[j];
+          summ += this.weights[i][j] * this.previousNeurons[j];
         }
         this.neurons[i] = this.sigmoid(summ, this.shifts[i]);
       }
@@ -83,5 +87,18 @@ export class Lay {
         }
       });
     }
+  }
+
+  print() {
+    console.log("Веса:");
+    //console.log(this.weights);
+    if (this.weights != null) {
+      this.weights.forEach((neuron, i) => {
+        console.log(neuron);
+      });
+    }
+
+    console.log("Сдвиги:");
+    console.log(this.shifts);
   }
 }

@@ -37,4 +37,13 @@ export class NeuralNetwork {
       lay.crossingover(otherLay);
     });
   }
+
+  print() {
+    console.log("______________________");
+    this.lays.forEach((lay, i) => {
+      console.log("=== Слой №", i);
+      lay.print();
+    });
+    console.log("");
+  }
 }
