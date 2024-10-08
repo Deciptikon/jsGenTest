@@ -52,10 +52,36 @@ export class Lay {
   }
 
   mutation(probability = 0.5, amplitude = 0.1) {
-    //
+    if (this.weights != null) {
+      for (let i = 0; i < this.weights.length; i++) {
+        for (let j = 0; j < this.weights[i].length; j++) {
+          if (Math.random() < probability) {
+            this.weights[i][j] += (Math.random() * 2 - 1) * amplitude;
+          }
+        }
+      }
+
+      this.shifts.forEach((shift) => {
+        shift += (Math.random() * 2 - 1) * amplitude;
+      });
+    }
   }
 
   crossingover(otherLay) {
-    //
+    if (this.weights != null && otherLay != null) {
+      for (let i = 0; i < this.weights.length; i++) {
+        for (let j = 0; j < this.weights[i].length; j++) {
+          if (Math.random() < 0.5) {
+            this.weights[i][j] = otherLay.weights[i][j];
+          }
+        }
+      }
+
+      this.shifts.forEach((shift, i) => {
+        if (Math.random() < 0.5) {
+          shift = otherLay.shifts[i];
+        }
+      });
+    }
   }
 }

@@ -26,10 +26,15 @@ export class NeuralNetwork {
   }
 
   mutation(probability = 0.5, amplitude = 0.1) {
-    //
+    this.lays.forEach((lay) => {
+      lay.mutation(probability, amplitude);
+    });
   }
 
   crossingover(otherNN) {
-    //
+    this.lays.forEach((lay, i) => {
+      let otherLay = otherNN.lays[i];
+      lay.crossingover(otherLay);
+    });
   }
 }

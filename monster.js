@@ -31,7 +31,7 @@ export class Monster {
   update(canvas, data) {
     [this.angle, this.tempory] = this.nn.forward(data);
     this.angle *= Math.PI * 2;
-    console.log(this.tempory);
+    //console.log(this.tempory);
 
     this.x += Math.cos(this.angle) * this.speed;
     this.y += Math.sin(this.angle) * this.speed;
@@ -67,7 +67,7 @@ export class Monster {
       this.createNN();
     } else {
       this.nn.crossingover(randomMonster.getNN());
-      this.nn.mutation(0.5, 0.1);
+      this.nn.mutation(0.01, 0.01);
     }
   }
 
